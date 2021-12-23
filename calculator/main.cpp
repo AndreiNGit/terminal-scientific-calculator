@@ -78,10 +78,13 @@ int main()
         c.setExp(e);
         c.calc();
         cout << c.getRez() << endl;
+        c.addsol(c.getRez());
         Calculator::addNrCalc();
         getline(cin, buffer);
     }
-
     cout << "Numarul de expresii evaluate: " << Calculator::getNrCalc() << " expresii." << endl;
+    cout << "Istoricul rezultatelor: " << endl;
+    for (int i = 0; i < c.getNrSol(); i++)
+        cout << c[i] << " ";
     return 0;
 }

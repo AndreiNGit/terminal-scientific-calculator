@@ -226,7 +226,7 @@ public:
     //verifica daca exista paranteze [] sau ()
     bool has_brackets(string type)
     {
-        if(expresie.find(type) != -1)
+        if (expresie.find(type) != -1)
             return true;
         else
             return false;
@@ -243,7 +243,7 @@ public:
         int op = expresie.find(type_open);
         int cl = expresie.find(type_close);
 
-        return expresie.substr(op + 1, cl-op-1);
+        return expresie.substr(op + 1, cl - op - 1);
     }
 
     //transforma operatia elementara in obiect Operatie pentru prelucrare
@@ -253,24 +253,24 @@ public:
         int nrcifb;
         Operatie* o = new Operatie();
         string strrez;
-            if (o != nullptr)
-                delete o;
-            if (poz != 0)
-                nrcifa = nr_cifre(poz, -1);
-            else
-                nrcifa = 0;
-            nrcifb = nr_cifre(poz, 1);
-            string suba = expresie.substr(poz - nrcifa, nrcifa);
-            string subb = expresie.substr(poz + 1, nrcifb);
-            string subsemn = expresie.substr(poz, 1);
-            double a = stod(suba);
-            double b = stod(subb);
-            o = new Operatie(a, b, subsemn);
-            strrez = to_string(o->result());
-            expresie.replace(poz - nrcifa, nrcifa + nrcifb + 1, strrez);
-  
+        if (o != nullptr)
+            delete o;
+        if (poz != 0)
+            nrcifa = nr_cifre(poz, -1);
+        else
+            nrcifa = 0;
+        nrcifb = nr_cifre(poz, 1);
+        string suba = expresie.substr(poz - nrcifa, nrcifa);
+        string subb = expresie.substr(poz + 1, nrcifb);
+        string subsemn = expresie.substr(poz, 1);
+        double a = stod(suba);
+        double b = stod(subb);
+        o = new Operatie(a, b, subsemn);
+        strrez = to_string(o->result());
+        expresie.replace(poz - nrcifa, nrcifa + nrcifb + 1, strrez);
+        delete o;
     }
-    
+
     //calculeaza o expresie elementara (fara paranteze) respectand ordinea operatiilor
     double calc() {
         for (int i = 0; i < expresie.length(); i++)
@@ -305,7 +305,7 @@ private:
     const string numeModel; //Denumire model calculator
     static int nrCalc; //Numarul de expresii calculate de toate calculatoarele in timpul programului
 public:
-    Calculator(): numeModel("N/A")
+    Calculator() : numeModel("N/A")
     {
         rez = -1;
         sol = nullptr;
@@ -350,7 +350,7 @@ public:
             strcpy_s(mesaj, strlen(c.mesaj) + 1, c.mesaj);
         }
         else
-            mesaj =  nullptr;
+            mesaj = nullptr;
     }
 
     //GETTERS SI SETTERS
@@ -437,19 +437,26 @@ public:
     //adauga o solutie noua in vectorul de solutii
     void addsol(double n)
     {
-        double* c;
         if (sol != nullptr)
         {
+            double* c;
             c = new double[nrSol];
             for (int i = 0; i < nrSol; i++)
                 c[i] = sol[i];
             delete[] sol;
+            nrSol++;
+            sol = new double[nrSol];
+            for (int i = 0; i < nrSol - 1; i++)
+                sol[i] = c[i];
+            sol[nrSol - 1] = n;
+            delete[] c;
         }
-        nrSol++;
-        sol = new double[nrSol];
-        for (int i = 1; i < nrSol - 1; i++)
-            sol[i] = c[i];
-        sol[nrSol - 1] = n;
+        else
+        {
+            nrSol++;
+            sol = new double[nrSol];
+            sol[nrSol - 1] = n;
+        }
     }
 
     //Incrementeaza nrCalc cu o unitate
@@ -537,7 +544,7 @@ public:
         if (mesaj != nullptr)
             delete[] mesaj;
         if (sol != nullptr)
-            delete[] mesaj;
+            delete[] sol;
     }
 
     friend istream& operator>>(istream& in, Calculator& c);
@@ -585,7 +592,7 @@ inline ostream& operator<<(ostream& out, Calculator c)
     }
     else
         out << "Calculatorul nu are solutii in istoric" << endl;
-    if(c.mesaj != nullptr)
+    if (c.mesaj != nullptr)
         out << "Ultimul mesaj afisat de calculator este: \"" << c.mesaj << "\"" << endl;
     out << "Modelul calculatorului este: " << c.numeModel << endl;
     return out;
