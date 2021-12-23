@@ -60,6 +60,7 @@ int main()
     Expresie e;
     cout.precision(15);
     cout << "Introduceti expresiile de calculat sau tastati exit pentru a iesi." << endl;
+    cout << "Numerele negative se pot introduce cu paranteze (-5) sau fara paranteze -5" << endl;
     getline(cin, buffer);
     while (buffer != "exit")
     {
@@ -81,6 +82,6 @@ int main()
         getline(cin, buffer);
     }
 
-    cout << "Numarul de expresii evaluate a fost de: " << Calculator::getNrCalc() << " solutii." << endl;
+    cout << "Numarul de expresii evaluate: " << Calculator::getNrCalc() << " expresii." << endl;
     return 0;
 }

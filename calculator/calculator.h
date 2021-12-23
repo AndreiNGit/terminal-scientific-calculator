@@ -201,8 +201,25 @@ public:
         }
         else
         {
-            for (i = index + 1; i < expresie.length() && strchr("0123456789.", expresie[i]); i++)
+            if (expresie[index + 1] == '-')
+            {
                 k++;
+                i = index + 2;
+            }
+            else
+                i = index + 1;
+            for (; i < expresie.length() && strchr("0123456789.", expresie[i]); i++)
+                k++;
+        }
+        if (dir < 0)
+        {
+            if (i > 0)
+            {
+                if (expresie[i] == '-' && !strchr("0123456789.", expresie[i - 1]))
+                    return k + 1;
+            }
+            else if (expresie[0] == '-')
+                return k + 1;
         }
         return k;
     }
@@ -232,27 +249,25 @@ public:
     //transforma operatia elementara in obiect Operatie pentru prelucrare
     void prelucrare_op(char semn, int poz)
     {
+        int nrcifa;
+        int nrcifb;
         Operatie* o = new Operatie();
         string strrez;
             if (o != nullptr)
                 delete o;
-            int nrcifa = nr_cifre(poz, -1);
-            int nrcifb = nr_cifre(poz, 1);
+            if (poz != 0)
+                nrcifa = nr_cifre(poz, -1);
+            else
+                nrcifa = 0;
+            nrcifb = nr_cifre(poz, 1);
             string suba = expresie.substr(poz - nrcifa, nrcifa);
             string subb = expresie.substr(poz + 1, nrcifb);
             string subsemn = expresie.substr(poz, 1);
             double a = stod(suba);
             double b = stod(subb);
             o = new Operatie(a, b, subsemn);
-            try
-            {
-                strrez = to_string(o->result());
-                expresie.replace(poz - nrcifa, nrcifa + nrcifb + 1, strrez);
-            }
-            catch (exception e)
-            {
-                cout << "Impartire la 0!";
-            }
+            strrez = to_string(o->result());
+            expresie.replace(poz - nrcifa, nrcifa + nrcifb + 1, strrez);
   
     }
     
@@ -265,8 +280,13 @@ public:
             if (expresie[i] == '*' || expresie[i] == '/')
                 prelucrare_op(expresie[i], i);
         for (int i = 0; i < expresie.length(); i++)
-            if (expresie[i] == '+' || expresie[i] == '-')
+        {
+            if (expresie[i] == '+' || (expresie[i] == '-' && i != 0))
+            {
                 prelucrare_op(expresie[i], i);
+                i = 0;
+            }
+        }
         return stod(expresie);
     }
 
